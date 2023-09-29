@@ -5,7 +5,7 @@ using namespace std;
 // vetor pre = tem o pai
 // devo comparar os pesos dos adj para saber quem por na distancia
 // cria uma fila de prioridade onde cada elemento é um par de inteiros, ordenados em ordem crescente de distância acumulada
-void dijkstra(vector<vector<int>> &grafo, vector<int> &dist, vector<int> &pre, int n, vector<vector<int>> &pesos, int m)
+void dijkstra(vector<vector<int>> &grafo, vector<int> &dist, vector<int> &pre, vector<vector<int>> &pesos)
 {
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> fila; // fila de prioridade com especificação GREATER = menor p maior
     fila.push({0, 1});                                                                    // sendo 1 o vert inicial sua distancia ate ele mesmo é 0, o par é (dist[v],v)
@@ -50,6 +50,12 @@ int main()
         int u, v, peso;
         cin >> u >> v >> peso;
 
+        if(u <0 || v < 0 || peso < 0)
+        {
+            cout << "entrada inválida" << endl;
+            return 0;
+        }
+
         grafo[u].push_back(v); // lendo os arcos e pondo na lista de adj quem é vizinho de qm
         grafo[v].push_back(u);
         pesos[u][v] = peso; // peso da aresta 0-1  = 50 por exemplo
@@ -65,7 +71,7 @@ int main()
         dist[i] = numeric_limits<int>::max();
     }
 
-    dijkstra(grafo, dist, pre, n, pesos, m);
+    dijkstra(grafo, dist, pre,pesos);
 
     for (int i = 1; i <= n; i++)
     {
