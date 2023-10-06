@@ -8,7 +8,7 @@ using namespace std;
 void dijkstra(vector<vector<int>> &grafo, vector<int> &dist, vector<int> &pre, vector<vector<int>> &pesos)
 {
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> fila; // fila de prioridade com especificação GREATER = menor p maior
-    fila.push({0, 1});                                                                    // sendo 1 o vert inicial sua distancia ate ele mesmo é 0, o par é (dist[v],v)
+    fila.push({0, 1});              //mudar p -i e nao 1 sempre         // sendo 1 o vert inicial sua distancia ate ele mesmo é 0, o par é (dist[v],v)
 
     while (!fila.empty())
     {
@@ -65,7 +65,7 @@ int main()
     // inicializações
     vector<int> dist(n + 1);
     vector<int> pre(n + 1, -1);
-    dist[1] = 0;
+    dist[1] = 0; // mudar p -i e nao sempre 1
     for (int i = 2; i <= n; i++)
     {
         dist[i] = numeric_limits<int>::max();
@@ -75,20 +75,13 @@ int main()
 
     for (int i = 1; i <= n; i++)
     {
-        cout << "Distância mínima até o vértice " << i << ": " << dist[i] << endl;
-        cout << "Predecessor de " << i << ": " << pre[i] << endl;
-        cout << "Caminho: ";
-        int atual = i;
-        while (atual != -1)
+        if(dist[i] == numeric_limits<int>::max())
         {
-            cout << atual << " ";
-            atual = pre[atual];
+            dist[i] =-1; //vert inalcançavel
         }
-        cout << endl
-             << endl;
+        cout << "Distância mínima do vértice" << " -i " <<  "até o vértice" << i << ": " << dist[i] << endl; // como poe o -i 
     }
 
-    return 0;
 
     return 0;
 }
