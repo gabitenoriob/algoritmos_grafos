@@ -109,10 +109,13 @@ int main(int argc, char *argv[]) {
     // inicializações
     vector<int> dist(n + 1);
     vector<int> pre(n + 1, -1);
-    dist[1] = 0; // mudar p -i e nao sempre 1
-    for (int i = 2; i <= n; i++)
+    dist[vert_inicial] = 0; // mudar p -i e nao sempre 1
+    for (int i = 1; i <= n; i++)
     {
+        if(i != vert_inicial)
+        {
         dist[i] = numeric_limits<int>::max();
+        }
     }
 
     fin.close();
@@ -133,7 +136,7 @@ int main(int argc, char *argv[]) {
         {
             dist[i] =-1; //vert inalcançavel
         }
-fout << "Distância mínima do vértice " << vert_inicial << " até o vértice " << i << ": " << dist[i] << endl;
+fout <<  i << ": " << dist[i] << endl;
     }
 
 
@@ -149,7 +152,7 @@ fout << "Distância mínima do vértice " << vert_inicial << " até o vértice "
         {
             dist[i] =-1; //vert inalcançavel
         }
-fout << "Distância mínima do vértice " << vert_inicial << " até o vértice " << i << ": " << dist[i] << endl;
+fout <<  i << ": " << dist[i] << endl;
     }
 
 }
@@ -167,7 +170,7 @@ fout << "Distância mínima do vértice " << vert_inicial << " até o vértice "
         {
             dist[i] =-1; //vert inalcançavel
         }
-        cout << "Distância mínima do vértice " << vert_inicial << " até o vértice " << i << ": " << dist[i] << endl;
+        cout  << i << ": " << dist[i] << endl;
     }
 
 
