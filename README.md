@@ -1,3 +1,3 @@
 # algoritmos_grafos
 
-#repositório para a disciplina de Teoria dos Grafos 
+Dupla: Gabriela Batista e Laís Souza
