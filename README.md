@@ -1,3 +1,3 @@
 # algoritmos_grafos
 
-###Dupla: Gabriela Batista e Laís Souza
+Dupla: Gabriela Batista e Laís Souza
