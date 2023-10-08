@@ -1,52 +1,41 @@
 #include <bits/stdc++.h>
-using namespace std;
-//arvore geradora minima, preciso de 1 arvore inicialmente vazia e que as arestas ordenadas em menor custo sao adc nessa
-//arvore de maneira que nao gere ciclo obv
+#include <fstream>
 
-//estrutura UNION FIND para verificar se os conjuntos formam ciclos 
+using namespace std;
+
 class UnionFind {
 public:
-    UnionFind(int n){
+    UnionFind(int n) {
         pai.resize(n);
         rank.resize(n, 0);
 
-        // Inicializa cada elemento como um conjunto separado, cada vert ké uma comp conexa
         for (int i = 0; i < n; ++i) {
             pai[i] = i;
         }
     }
 
-    void makeSet(int x)
-    {
+    void makeSet(int x) {
         pai[x] = x;
         rank[x] = 0;
     }
 
-    int find(int x)
-    {
-        if(pai[x] !=x)
-        {
+    int find(int x) {
+        if (pai[x] != x) {
             pai[x] = find(pai[x]);
         }
 
         return pai[x];
     }
 
-    void unionSets(int x , int y)
-    {
-        if(rank[x] >= rank[y])
-        {
+    void unionSets(int x, int y) {
+        if (rank[x] >= rank[y]) {
             pai[y] = x;
-            if(rank[x] == rank[y])
-            {
-                rank[x] ++;
+            if (rank[x] == rank[y]) {
+                rank[x]++;
             }
-        }
-        else
-        {
+        } else {
             pai[x] = y;
         }
-        
     }
 
 private:
@@ -54,76 +43,139 @@ private:
     vector<int> rank;
 };
 
-vector<vector<int>> kruskal(vector<vector<int>> &grafo,priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> &pesos, int n)
-{
+vector<vector<int>> kruskal(vector<vector<int>> &grafo, priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> &pesos, int n) {
     UnionFind *uf = new UnionFind(n);
-    vector<vector<int>>arvore; // arvore vazia
+    vector<vector<int>> arvore;
 
-    for(int i = 1; i <= n; i++)
-    {
+    for (int i = 1; i <= n; i++) {
         uf->makeSet(i);
     }
-    while(!pesos.empty())
-    {
+
+    while (!pesos.empty()) {
         int peso = pesos.top().first;
         int u = pesos.top().second;
         pesos.pop();
 
-        if(!pesos.empty())
-        {
-            int v = pesos.top().second; // se a fila n ta vazia e ta ordenada entao se ha aresta uv = 10 a fila tem (10,u) (10,v) em sequencia
+        if (!pesos.empty()) {
+            int v = pesos.top().second;
 
-
-            if(uf->find(u) != uf->find(v))
-            {
-                arvore.push_back({u,v});
-                uf->unionSets(uf->find(u),uf->find(v));
+            if (uf->find(u) != uf->find(v)) {
+                arvore.push_back({u, v});
+                uf->unionSets(uf->find(u), uf->find(v));
             }
-            
         }
-
-
     }
+
     delete uf;
     return arvore;
 }
-int main()
-{
+
+int main(int argc, char *argv[]) {
+    string input_file = "";
+    string output_file = "";
+    bool show_solution = false;
+    int vert_inicial = 1;
+
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-h") == 0) {
+            cout << "Help:" << endl;
+            cout << "-h: mostra o help" << endl;
+            cout << "-o <arquivo>: redireciona a saida para o 'arquivo'" << endl;
+            cout << "-f <arquivo>: indica o 'arquivo' que contém o grafo de entrada" << endl;
+            cout << "-s: mostra a solução (em ordem crescente)" << endl;
+            cout << "-i: vértice inicial" << endl;
+            return 0;
+        } 
+
+        else if (strcmp(argv[i], "-o") == 0 && i < argc - 1) {
+            output_file = argv[++i];
+        } 
+        
+        else if (strcmp(argv[i], "-f") == 0 && i < argc - 1) {
+            input_file = argv[++i];
+        } 
+        
+        else if (strcmp(argv[i], "-s") == 0) {
+            show_solution = true;
+        } 
+        
+        else if (strcmp(argv[i], "-i") == 0 && i < argc - 1) {
+            vert_inicial = atoi(argv[++i]);
+        }
+    }
+
+    if (input_file == "") {
+        cerr << "No input file specified. Use the -f parameter." << endl;
+        return 1;
+    }
+
+    ifstream fin(input_file);
+    if (!fin) {
+        cerr << "Could not open input file: " << input_file << endl;
+        return 1;
+    }
+
     int n, m;
-    cin >> n >> m;
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pesos; // fila de prioridade com especificação GREATER = menor p maior
+    fin >> n >> m;
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pesos;
     vector<vector<int>> grafo(n + 1);
 
-    for (int i = 0; i < m; i++)
-    {
-
+    for (int i = 0; i < m; i++) {
         int u, v, peso;
-        cin >> u >> v >> peso;
+        fin >> u >> v >> peso;
 
-        if(u <0 || v < 0 || peso < 0)
-        {
+        if (u < 0 || v < 0 || peso < 0) {
             cout << "entrada inválida" << endl;
             return 0;
         }
 
-        grafo[u].push_back(v); // lendo os arcos e pondo na lista de adj quem é vizinho de qm
+        grafo[u].push_back(v);
         grafo[v].push_back(u);
 
-        // por os pesos em ordem
-       pesos.push({peso,u});
-       pesos.push({peso,v});
+        pesos.push({peso, u});
+        pesos.push({peso, v});
     }
 
-//testei e esta ordenando correto exemplo aresta de peso 1 do vert 2 -4 = 1,4 e 1,2
-    
-    
-   
-vector<vector<int>> arvore= kruskal(grafo,pesos, n);
+    fin.close();
 
-for (auto &aresta : arvore)
-{
-    cout << "{" << aresta[0] << ", " << aresta[1] << "}" << endl;
+    if (!(output_file == "")) {
+        ofstream fout(output_file);
+        if (!fout) {
+            cerr << "Could not open output file: " << output_file << endl;
+            return 1;
+        }
+
+        if (show_solution) {
+            vector<vector<int>> arvore = kruskal(grafo, pesos, n);
+
+            for (auto &aresta : arvore) {
+                fout << "{" << aresta[0] << ", " << aresta[1] << "}" << endl;
+            }
+
+            fout.close();
+            return 0;
+        }
+        else {
+            vector<vector<int>> arvore = kruskal(grafo, pesos, n);
+    // Escreva a árvore em 'fout' se necessário
+            for (const auto &aresta : arvore) 
+            {
+                fout << "{" << aresta[0] << ", " << aresta[1] << "}" << endl;
+            }
 }
+
+
+        fout.close();
+    }
+
+    if (show_solution) {
+        // Se a opção -s for fornecida, exibir a solução na tela
+        vector<vector<int>> arvore = kruskal(grafo, pesos, n);
+
+        for (auto &aresta : arvore) {
+            cout << "{" << aresta[0] << ", " << aresta[1] << "}" << endl;
+        }
+    }
 
     return 0;
 }

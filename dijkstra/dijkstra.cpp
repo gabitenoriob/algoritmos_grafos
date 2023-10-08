@@ -37,10 +37,54 @@ void dijkstra(vector<vector<int>> &grafo, vector<int> &dist, vector<int> &pre, v
         }
     }
 }
-int main()
-{
+
+int main(int argc, char *argv[]) {
+    string input_file = "";
+    string output_file = "";
+    bool show_solution = false;
+    int vert_inicial = 1;
+
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-h") == 0) {
+            cout << "Help:" << endl;
+            cout << "-h: mostra o help" << endl;
+            cout << "-o <arquivo>: redireciona a saida para o 'arquivo'" << endl;
+            cout << "-f <arquivo>: indica o 'arquivo' que contém o grafo de entrada" << endl;
+            cout << "-s: mostra a solução (em ordem crescente)" << endl;
+            cout << "-i: vértice inicial" << endl;
+            return 0;
+        } 
+
+        else if (strcmp(argv[i], "-o") == 0 && i < argc - 1) {
+            output_file = argv[++i];
+        } 
+        
+        else if (strcmp(argv[i], "-f") == 0 && i < argc - 1) {
+            input_file = argv[++i];
+        } 
+        
+        else if (strcmp(argv[i], "-s") == 0) {
+            show_solution = true;
+        } 
+        
+        else if (strcmp(argv[i], "-i") == 0 && i < argc - 1) {
+            vert_inicial = atoi(argv[++i]);
+        }
+    }
+
+    if (input_file == "") {
+        cerr << "No input file specified. Use the -f parameter." << endl;
+        return 1;
+    }
+
+    ifstream fin(input_file);
+    if (!fin) {
+        cerr << "Could not open input file: " << input_file << endl;
+        return 1;
+    }
+
     int n, m;
-    cin >> n >> m;
+    fin >> n >> m;
     vector<vector<int>> pesos(n + 1, vector<int>(n + 1, numeric_limits<int>::max())); // inicializar com valores grandes
     vector<vector<int>> grafo(n + 1);
 
@@ -48,7 +92,7 @@ int main()
     {
 
         int u, v, peso;
-        cin >> u >> v >> peso;
+        fin >> u >> v >> peso;
 
         if(u <0 || v < 0 || peso < 0)
         {
@@ -71,7 +115,17 @@ int main()
         dist[i] = numeric_limits<int>::max();
     }
 
-    dijkstra(grafo, dist, pre,pesos);
+    fin.close();
+
+    if (!(output_file == "")) {
+        ofstream fout(output_file);
+        if (!fout) {
+            cerr << "Could not open output file: " << output_file << endl;
+            return 1;
+        }
+
+        if (show_solution) {
+            dijkstra(grafo, dist, pre,pesos);
 
     for (int i = 1; i <= n; i++)
     {
@@ -79,9 +133,44 @@ int main()
         {
             dist[i] =-1; //vert inalcançavel
         }
-        cout << "Distância mínima do vértice" << " -i " <<  "até o vértice" << i << ": " << dist[i] << endl; // como poe o -i 
+fout << "Distância mínima do vértice " << vert_inicial << " até o vértice " << i << ": " << dist[i] << endl;
+    }
+
+
+            fout.close();
+            return 0;
+        }
+        else {
+             dijkstra(grafo, dist, pre,pesos);
+
+    for (int i = 1; i <= n; i++)
+    {
+        if(dist[i] == numeric_limits<int>::max())
+        {
+            dist[i] =-1; //vert inalcançavel
+        }
+fout << "Distância mínima do vértice " << vert_inicial << " até o vértice " << i << ": " << dist[i] << endl;
+    }
+
+}
+
+
+        fout.close();
+    }
+
+    if (show_solution) {
+         dijkstra(grafo, dist, pre,pesos);
+
+    for (int i = 1; i <= n; i++)
+    {
+        if(dist[i] == numeric_limits<int>::max())
+        {
+            dist[i] =-1; //vert inalcançavel
+        }
+        cout << "Distância mínima do vértice " << vert_inicial << " até o vértice " << i << ": " << dist[i] << endl;
     }
 
 
     return 0;
+}
 }
