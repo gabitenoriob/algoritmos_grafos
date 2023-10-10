@@ -44,13 +44,13 @@ int main(int argc, char *argv[]) {
     bool show_solution = false;
     int vert_inicial = 1;
 
+
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-h") == 0) {
             cout << "Help:" << endl;
             cout << "-h: mostra o help" << endl;
             cout << "-o <arquivo>: redireciona a saida para o 'arquivo'" << endl;
             cout << "-f <arquivo>: indica o 'arquivo' que contém o grafo de entrada" << endl;
-            cout << "-s: mostra a solução (em ordem crescente)" << endl;
             cout << "-i: vértice inicial" << endl;
             return 0;
         } 
@@ -60,13 +60,10 @@ int main(int argc, char *argv[]) {
         } 
         
         else if (strcmp(argv[i], "-f") == 0 && i < argc - 1) {
-            input_file = argv[++i];
+            input_file = argv[i + 1];
         } 
         
-        else if (strcmp(argv[i], "-s") == 0) {
-            show_solution = true;
-        } 
-        
+
         else if (strcmp(argv[i], "-i") == 0 && i < argc - 1) {
             vert_inicial = atoi(argv[++i]);
         }
@@ -77,7 +74,9 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    ifstream fin(input_file);
+    ifstream fin;
+    fin.open(input_file);
+
     if (!fin) {
         cerr << "Could not open input file: " << input_file << endl;
         return 1;
@@ -93,7 +92,7 @@ int main(int argc, char *argv[]) {
 
         int u, v, peso;
         fin >> u >> v >> peso;
-
+        
         if(u <0 || v < 0 || peso < 0)
         {
             cout << "entrada inválida" << endl;
@@ -136,7 +135,7 @@ int main(int argc, char *argv[]) {
         {
             dist[i] =-1; //vert inalcançavel
         }
-fout <<  i << ": " << dist[i] << endl;
+fout <<  i << ":" << dist[i] << endl;
     }
 
 
@@ -152,28 +151,37 @@ fout <<  i << ": " << dist[i] << endl;
         {
             dist[i] =-1; //vert inalcançavel
         }
-fout <<  i << ": " << dist[i] << endl;
+fout <<  i << ":" << dist[i] << endl;
     }
 
 }
 
 
         fout.close();
-    }
-
-    if (show_solution) {
-         dijkstra(grafo, dist, pre,pesos);
-
-    for (int i = 1; i <= n; i++)
+    } 
+    else 
     {
-        if(dist[i] == numeric_limits<int>::max())
+        dijkstra(grafo, dist, pre,pesos);
+        for (int i = 1; i <= n; i++)
         {
-            dist[i] =-1; //vert inalcançavel
+            if(dist[i] == numeric_limits<int>::max())
+                dist[i] =-1; //vert inalcançavel
+        
+            cout  << i << ":" << dist[i];
+
+            if (i != n)
+            {
+                cout << " ";
+            }
+            else
+            {
+                cout << endl;
+            }
         }
-        cout  << i << ": " << dist[i] << endl;
     }
+
 
 
     return 0;
-}
+
 }
