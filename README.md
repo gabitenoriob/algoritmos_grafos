@@ -1,3 +1,7 @@
-# algoritmos_grafos
+### Algoritmos_grafos
 
-Dupla: Gabriela Batista e Laís Souza
+# Dupla: Gabriela Batista e Laís Souza
+
+*Algoritos: Dijkstra,Kruskal,Prim e Bellman*
+
+
