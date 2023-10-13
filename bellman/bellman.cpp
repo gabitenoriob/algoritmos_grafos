@@ -7,9 +7,9 @@ struct Aresta {
     int peso;
 };
 
-void BellmanFord(vector<vector<Aresta>>& grafo, vector<vector<int>>& pesos, int n, int vert_inicial) {
-    vector<int> distancia(n + 1, numeric_limits<int>::max());
+void BellmanFord(vector<vector<Aresta>>& grafo, vector<vector<int>>& pesos, vector<int> &distancia, int n, int vert_inicial){
     distancia[vert_inicial] = 0;
+   
 
         for (int u = 1; u <= n; u++) {
             for (const Aresta& aresta : grafo[u]) {
@@ -22,8 +22,7 @@ void BellmanFord(vector<vector<Aresta>>& grafo, vector<vector<int>>& pesos, int 
             }
         }
     
-
-    
+        int u = 1;
         for (const Aresta& aresta : grafo[u]) {
             int v = aresta.v_final;
             int peso = aresta.peso;
@@ -80,6 +79,7 @@ int main(int argc, char* argv[]) {
 
     vector<vector<Aresta>> grafo(n + 1);
     vector<vector<int>> pesos(n + 1, vector<int>(n + 1, numeric_limits<int>::max()));
+    vector<int> distancia(n + 1, numeric_limits<int>::max());
 
     for (int i = 0; i < m; i++) {
         int u, v, peso;
@@ -99,7 +99,30 @@ int main(int argc, char* argv[]) {
         pesos[v][u] = peso;
     }
 
-    BellmanFord(grafo, pesos, n, vert_inicial);
+    BellmanFord(grafo, pesos, distancia, n, vert_inicial);
+
+    if (!(output_file == "")) 
+{
+        ofstream fout(output_file);
+        if (!fout) {
+            cerr << "Could not open output file: " << output_file << endl;
+            return 1;
+        }
+
+        for (int i = 1; i <= n; i++)
+        {
+            if(distancia[i] == numeric_limits<int>::max())
+            {
+                distancia[i] =-1; //vert inalcançavel
+            }
+                fout <<  i << ":" << distancia[i] << endl;
+            }
+
+            fout.close();
+            return 0;
+
+        fout.close();
+}
 
     return 0;
 }
