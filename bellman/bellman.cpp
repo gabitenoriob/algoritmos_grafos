@@ -23,7 +23,7 @@ void BellmanFord(vector<vector<Aresta>>& grafo, vector<vector<int>>& pesos, int 
         }
     
 
-    for (int u = 1; u <= n; u++) {
+    
         for (const Aresta& aresta : grafo[u]) {
             int v = aresta.v_final;
             int peso = aresta.peso;
@@ -33,7 +33,6 @@ void BellmanFord(vector<vector<Aresta>>& grafo, vector<vector<int>>& pesos, int 
                 return;
             }
         }
-    }
 
     for (int i = 1; i <= n; i++) {
         cout << "Distância mínima de " << vert_inicial << " para " << i << ": " << distancia[i] << endl;
